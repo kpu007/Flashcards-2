@@ -1,11 +1,13 @@
 package k07.flashcards2;
 
 import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -13,12 +15,11 @@ public class MainForm {
     private JButton flipButton;
     private JButton previousButton;
     private JButton nextButton;
-    private JButton addButton;
-    private JTextField textField1;
-    private JTextField textField2;
+    private JButton loadButton;
     private JPanel mainPanel;
     private JTextPane flashcardPane;
     private JLabel progressLabel;
+    private JButton shuffleButton;
 
     private FlashcardList list;
 
@@ -32,8 +33,37 @@ public class MainForm {
         updateCurrentCard();
     }
 
+    public void setFlashcardList(FlashcardList flashcardList) {
+        this.list = flashcardList;
+        updateCurrentCard();
+    }
+
+    public void loadFromFile() {
+        JFileChooser chooser = new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV Files", "csv");
+        chooser.setFileFilter(filter);
+
+        int returnVal = chooser.showOpenDialog(null);
+        if(returnVal == JFileChooser.APPROVE_OPTION) {
+            File file = chooser.getSelectedFile();
+
+            try {
+                FlashcardList flashcardList = FlashcardListSerializer.createFromFile(file);
+                setFlashcardList(flashcardList);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+        }
+    }
+
+    private void shuffle() {
+        list.shuffle();
+        updateCurrentCard();
+    }
+
     private void updateProgressLabel() {
-        progressLabel.setText(list.getIndex() + "/" + list.getSize());
+        progressLabel.setText(list.getIndex() + 1 + "/" + list.getSize());
     }
 
     private void updateCurrentCard() {
@@ -92,6 +122,20 @@ public class MainForm {
             @Override
             public void actionPerformed(ActionEvent e) {
                 nextCard();
+            }
+        });
+
+        loadButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                loadFromFile();
+            }
+        });
+
+        shuffleButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                shuffle();
             }
         });
     }

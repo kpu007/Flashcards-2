@@ -1,5 +1,8 @@
 package k07.flashcards2;
 
+import javax.swing.*;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -16,6 +19,7 @@ public class FlashcardList {
         Collections.shuffle(flashcards);
         index = 0;
     }
+
 
     public FlashcardTuple getCurrent() {
         return flashcards.get(index);
