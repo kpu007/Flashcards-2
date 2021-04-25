@@ -10,6 +10,7 @@ import java.util.List;
 public class FlashcardList {
     private List<FlashcardTuple> flashcards;
     private int index = 0;
+    private boolean displayingFront = true;
 
     public FlashcardList(List<FlashcardTuple> flashcards) {
         this.flashcards = flashcards;
@@ -19,7 +20,6 @@ public class FlashcardList {
         Collections.shuffle(flashcards);
         index = 0;
     }
-
 
     public FlashcardTuple getCurrent() {
         return flashcards.get(index);
@@ -35,6 +35,7 @@ public class FlashcardList {
 
     public void next() {
         index++;
+        displayingFront = true;
 
         if(index >= flashcards.size()) {
             index = 0;
@@ -43,9 +44,18 @@ public class FlashcardList {
 
     public void prev() {
         index--;
+        displayingFront = true;
 
         if(index < 0) {
             index = flashcards.size() - 1;
         }
+    }
+
+    public void flip() {
+        displayingFront = !displayingFront;
+    }
+
+    public String getDisplayedText() {
+        return displayingFront ? getCurrent().getFront() : getCurrent().getBack();
     }
 }

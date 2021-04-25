@@ -5,11 +5,7 @@ import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 public class MainForm {
     private JButton flipButton;
@@ -24,13 +20,7 @@ public class MainForm {
     private FlashcardList list;
 
     public MainForm() {
-        List<FlashcardTuple> test = new ArrayList<FlashcardTuple>();
-        test.add(new FlashcardTuple("a", "1"));
-        test.add(new FlashcardTuple("b", "2"));
-        list = new FlashcardList(test);
-
         setupComponents();
-        updateCurrentCard();
     }
 
     public void setFlashcardList(FlashcardList flashcardList) {
@@ -50,8 +40,10 @@ public class MainForm {
             try {
                 FlashcardList flashcardList = FlashcardListSerializer.createFromFile(file);
                 setFlashcardList(flashcardList);
+                setButtonsEnabled(true);
             } catch (Exception e) {
                 e.printStackTrace();
+                JOptionPane.showMessageDialog(null, "Error loading file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
 
         }
@@ -72,7 +64,8 @@ public class MainForm {
     }
 
     private void flipCurrentCard() {
-        flashcardPane.setText(list.getCurrent().getBack());
+        list.flip();
+        flashcardPane.setText(list.getDisplayedText());
     }
 
     private void nextCard() {
@@ -102,41 +95,19 @@ public class MainForm {
         StyleConstants.setAlignment(center, StyleConstants.ALIGN_CENTER);
         doc.setParagraphAttributes(0, doc.getLength(), center, false);
 
-        updateProgressLabel();
+        flipButton.addActionListener(l -> flipCurrentCard());
+        previousButton.addActionListener(l -> prevCard());
+        nextButton.addActionListener(l -> nextCard());
+        loadButton.addActionListener(l -> loadFromFile());
+        shuffleButton.addActionListener(l -> shuffle());
 
-        flipButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                flipCurrentCard();
-            }
-        });
+        setButtonsEnabled(false);
+    }
 
-        previousButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                prevCard();
-            }
-        });
-
-        nextButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                nextCard();
-            }
-        });
-
-        loadButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                loadFromFile();
-            }
-        });
-
-        shuffleButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                shuffle();
-            }
-        });
+    private void setButtonsEnabled(boolean value) {
+        flipButton.setEnabled(value);
+        previousButton.setEnabled(value);
+        nextButton.setEnabled(value);
+        shuffleButton.setEnabled(value);
     }
 }
