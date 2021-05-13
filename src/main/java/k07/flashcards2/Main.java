@@ -1,9 +1,11 @@
 package k07.flashcards2;
 
+import javax.swing.*;
+
 public class Main {
 
     public static void main(String[] args) {
-        MainForm mainForm = new MainForm();
-        mainForm.createMainForm();
+        MainWindow mainWindow = new MainWindow();
+        mainWindow.setVisible(true);
     }
 }
