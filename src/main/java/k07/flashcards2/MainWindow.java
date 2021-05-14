@@ -17,6 +17,7 @@ public class MainWindow extends JFrame {
     private JPanel mainPanel = new JPanel();
     private JTextPane flashcardPane = new JTextPane();
     private JLabel progressLabel = new JLabel("/");
+    private JMenuBar menuBar = new JMenuBar();
 
     private GridBagLayout layout = new GridBagLayout();
     private FlashcardList list;
@@ -24,7 +25,6 @@ public class MainWindow extends JFrame {
     public MainWindow() {
         this.setTitle("Flashcards 2");
         this.setLayout(new BorderLayout());
-        this.setContentPane(this.mainPanel);
         mainPanel.setLayout(layout);
 
         setupComponents();
@@ -55,7 +55,6 @@ public class MainWindow extends JFrame {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Error loading file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
-
         }
     }
 
@@ -119,6 +118,7 @@ public class MainWindow extends JFrame {
         //Allow the below components to resize horizontally while forcing all the extra vertical space into the flashcard pane
         gbc.weightx = 0.5;
         gbc.weighty = 0;
+        gbc.insets = new Insets(3, 3, 3, 3); //external padding
         gbc.fill = GridBagConstraints.HORIZONTAL;
 
         flipButton.addActionListener(l -> flipCurrentCard());
@@ -138,6 +138,23 @@ public class MainWindow extends JFrame {
         this.addComponent(nextButton, gbc, 3, 6);
 
         setButtonsEnabled(false);
+
+        JMenuItem loadItem = new JMenuItem("Load");
+        loadItem.addActionListener(l -> loadFromFile());
+        loadItem.setMnemonic('l');
+
+        JMenuItem exitItem = new JMenuItem("Exit");
+        exitItem.addActionListener(l -> exit());
+        exitItem.setMnemonic('x');
+
+        JMenu fileMenu = new JMenu("File");
+        fileMenu.add(loadItem);
+        fileMenu.add(new JSeparator());
+        fileMenu.add(exitItem);
+
+        menuBar.add(fileMenu);
+        this.add(menuBar, BorderLayout.NORTH);
+        this.add(mainPanel, BorderLayout.CENTER);
     }
 
     private void setButtonsEnabled(boolean value) {
@@ -145,5 +162,9 @@ public class MainWindow extends JFrame {
         previousButton.setEnabled(value);
         nextButton.setEnabled(value);
         shuffleButton.setEnabled(value);
+    }
+
+    private void exit() {
+        System.exit(0);
     }
 }
