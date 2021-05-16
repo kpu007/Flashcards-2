@@ -58,4 +58,15 @@ public class FlashcardList {
     public String getDisplayedText() {
         return displayingFront ? getCurrent().getFront() : getCurrent().getBack();
     }
+
+    //Used for writing to CSV
+    public List<Object[]> createRecordArray() {
+        List<Object[]> result = new ArrayList<>();
+
+        for(FlashcardTuple flashcard: flashcards) {
+            result.add(new Object[] {flashcard.getFront(), flashcard.getBack()});
+        }
+
+        return result;
+    }
 }

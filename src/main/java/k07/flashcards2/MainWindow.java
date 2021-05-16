@@ -7,6 +7,7 @@ import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
 import java.awt.*;
 import java.io.File;
+import java.io.IOException;
 
 public class MainWindow extends JFrame {
     private JButton flipButton = new JButton("Flip");
@@ -51,9 +52,31 @@ public class MainWindow extends JFrame {
                 FlashcardList flashcardList = FlashcardListSerializer.createFromFile(file);
                 setFlashcardList(flashcardList);
                 setButtonsEnabled(true);
-            } catch (Exception e) {
+            } catch (IOException e) {
                 e.printStackTrace();
                 JOptionPane.showMessageDialog(null, "Error loading file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+            }
+        }
+    }
+
+    public void saveToFile() {
+        if(list == null) {
+            JOptionPane.showMessageDialog(null, "Nothing is currently loaded!", "Error", JOptionPane.ERROR_MESSAGE);
+        } else {
+            JFileChooser chooser = new JFileChooser();
+            FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV Files", "csv");
+            chooser.setFileFilter(filter);
+
+            int returnVal = chooser.showOpenDialog(null);
+            if(returnVal == JFileChooser.APPROVE_OPTION) {
+                File file = chooser.getSelectedFile();
+
+                try {
+                    FlashcardListSerializer.saveToFile(list, file);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    JOptionPane.showMessageDialog(null, "Error loading file: " + e.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
+                }
             }
         }
     }
@@ -143,12 +166,17 @@ public class MainWindow extends JFrame {
         loadItem.addActionListener(l -> loadFromFile());
         loadItem.setMnemonic('l');
 
+        JMenuItem saveItem = new JMenuItem("Save");
+        saveItem.addActionListener(l -> saveToFile());
+        saveItem.setMnemonic('s');
+
         JMenuItem exitItem = new JMenuItem("Exit");
         exitItem.addActionListener(l -> exit());
         exitItem.setMnemonic('x');
 
         JMenu fileMenu = new JMenu("File");
         fileMenu.add(loadItem);
+        fileMenu.add(saveItem);
         fileMenu.add(new JSeparator());
         fileMenu.add(exitItem);
 
