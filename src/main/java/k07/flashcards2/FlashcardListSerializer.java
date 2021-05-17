@@ -10,18 +10,22 @@ import java.util.List;
 
 public class FlashcardListSerializer {
 
-    public static FlashcardList createFromFile(File input) throws IOException {
+    public static FlashcardList createFromFile(File input) throws IOException, IllegalArgumentException {
         FileReader reader = new FileReader(input);
 
         Iterable<CSVRecord> records = CSVFormat.DEFAULT.parse(reader);
         List<FlashcardTuple> list = new ArrayList<FlashcardTuple>();
-        
-        for(CSVRecord record: records) {
+
+        for (CSVRecord record: records) {
             String front = record.get(0);
             String back = record.get(1);
 
             FlashcardTuple flashcard = new FlashcardTuple(front, back);
             list.add(flashcard);
+        }
+
+        if (list.isEmpty()) {
+           throw new IllegalArgumentException("The input file is empty!");
         }
 
         return new FlashcardList(list);
@@ -35,6 +39,5 @@ public class FlashcardListSerializer {
         printer.printRecords(list.createRecordArray());
         printer.flush();
         writer.close();
-
     }
 }
