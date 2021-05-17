@@ -20,6 +20,9 @@ public class MainWindow extends JFrame {
     private JLabel progressLabel = new JLabel("/");
     private JMenuBar menuBar = new JMenuBar();
 
+    private JMenuItem addItem = new JMenuItem();
+    private JMenuItem saveItem = new JMenuItem();
+
     private GridBagLayout layout = new GridBagLayout();
     private FlashcardList list;
 
@@ -113,6 +116,20 @@ public class MainWindow extends JFrame {
         updateCurrentCard();
     }
 
+    private void addCard() {
+        if(list == null) {
+            JOptionPane.showMessageDialog(null, "Nothing is currently loaded!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        FlashcardTuple flashcard = FlashcardAddDialog.getFlashcardFromDialog();
+
+        if (flashcard != null) {
+            list.add(flashcard);
+            updateProgressLabel();
+        }
+    }
+
     private void addComponent(JComponent component, GridBagConstraints gbc, int x, int y) {
         addComponent(component, gbc, x, y, 1, 1);
     }
@@ -165,13 +182,15 @@ public class MainWindow extends JFrame {
 
         setButtonsEnabled(false);
 
+        //File menu
         JMenuItem loadItem = new JMenuItem("Load");
         loadItem.addActionListener(l -> loadFromFile());
         loadItem.setMnemonic('l');
 
-        JMenuItem saveItem = new JMenuItem("Save");
+        saveItem = new JMenuItem("Save");
         saveItem.addActionListener(l -> saveToFile());
         saveItem.setMnemonic('s');
+        saveItem.setEnabled(false);
 
         JMenuItem exitItem = new JMenuItem("Exit");
         exitItem.addActionListener(l -> exit());
@@ -183,7 +202,18 @@ public class MainWindow extends JFrame {
         fileMenu.add(new JSeparator());
         fileMenu.add(exitItem);
 
+        //Edit menu
+        addItem = new JMenuItem("Add");
+        addItem.addActionListener(l -> addCard());
+        addItem.setMnemonic('a');
+        addItem.setEnabled(false);
+        
+        JMenu editMenu = new JMenu("Edit");
+        editMenu.add(addItem);
+
         menuBar.add(fileMenu);
+        menuBar.add(editMenu);
+
         this.add(menuBar, BorderLayout.NORTH);
         this.add(mainPanel, BorderLayout.CENTER);
     }
@@ -193,6 +223,9 @@ public class MainWindow extends JFrame {
         previousButton.setEnabled(value);
         nextButton.setEnabled(value);
         shuffleButton.setEnabled(value);
+
+        addItem.setEnabled(value);
+        saveItem.setEnabled(value);
     }
 
     private void exit() {

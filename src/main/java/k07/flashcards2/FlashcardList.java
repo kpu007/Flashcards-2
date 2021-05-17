@@ -51,6 +51,10 @@ public class FlashcardList {
         }
     }
 
+    public void add(FlashcardTuple flashcard) {
+        flashcards.add(flashcard);
+    }
+
     public void flip() {
         displayingFront = !displayingFront;
     }
