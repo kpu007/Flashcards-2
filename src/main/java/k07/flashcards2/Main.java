@@ -1,7 +1,5 @@
 package k07.flashcards2;
 
-import javax.swing.*;
-
 public class Main {
 
     public static void main(String[] args) {

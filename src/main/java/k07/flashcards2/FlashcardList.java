@@ -1,8 +1,5 @@
 package k07.flashcards2;
 
-import javax.swing.*;
-import javax.swing.filechooser.FileNameExtensionFilter;
-import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -53,6 +50,14 @@ public class FlashcardList {
 
     public void add(FlashcardTuple flashcard) {
         flashcards.add(flashcard);
+    }
+
+    public void removeCurrent() {
+        flashcards.remove(index);
+
+        if(index >= flashcards.size()) {
+            index = index - 1;
+        }
     }
 
     public void flip() {

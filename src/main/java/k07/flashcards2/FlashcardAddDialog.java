@@ -33,8 +33,7 @@ public class FlashcardAddDialog {
         gbc.gridy = 1;
         panel.add(backField, gbc);
 
-        int result = JOptionPane.showConfirmDialog(null, panel,
-                "Add Flashcard", JOptionPane.OK_CANCEL_OPTION);
+        int result = JOptionPane.showConfirmDialog(null, panel,"Add Flashcard", JOptionPane.OK_CANCEL_OPTION);
         if (result == JOptionPane.OK_OPTION) {
 
             String frontFieldText = frontField.getText();

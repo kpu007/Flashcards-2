@@ -21,15 +21,15 @@ public class MainWindow extends JFrame {
     private JMenuBar menuBar = new JMenuBar();
 
     private JMenuItem addItem = new JMenuItem();
+    private JMenuItem removeItem = new JMenuItem();
     private JMenuItem saveItem = new JMenuItem();
 
-    private GridBagLayout layout = new GridBagLayout();
     private FlashcardList list;
 
     public MainWindow() {
         this.setTitle("Flashcards 2");
         this.setLayout(new BorderLayout());
-        mainPanel.setLayout(layout);
+        mainPanel.setLayout(new GridBagLayout());
 
         setupComponents();
 
@@ -117,7 +117,7 @@ public class MainWindow extends JFrame {
     }
 
     private void addCard() {
-        if(list == null) {
+        if (list == null) {
             JOptionPane.showMessageDialog(null, "Nothing is currently loaded!", "Error", JOptionPane.ERROR_MESSAGE);
             return;
         }
@@ -126,6 +126,25 @@ public class MainWindow extends JFrame {
 
         if (flashcard != null) {
             list.add(flashcard);
+            updateProgressLabel();
+        }
+    }
+
+    private void removeCurrentCard() {
+        if (list == null) {
+            JOptionPane.showMessageDialog(null, "Nothing is currently loaded!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        } else if (list.getSize() <= 0) {
+            JOptionPane.showMessageDialog(null, "There's nothing to delete!", "Error", JOptionPane.ERROR_MESSAGE);
+            return;
+        }
+
+        String cardDescription = "Front: " + list.getCurrent().getFront() + "\nBack: " + list.getCurrent().getBack();
+        int result = JOptionPane.showConfirmDialog(this, "Are you sure you want to delete this card?\n" + cardDescription, "Confirmation", JOptionPane.YES_NO_OPTION);
+
+        if (result == JOptionPane.YES_OPTION) {
+            list.removeCurrent();
+            updateCurrentCard();
             updateProgressLabel();
         }
     }
@@ -207,9 +226,15 @@ public class MainWindow extends JFrame {
         addItem.addActionListener(l -> addCard());
         addItem.setMnemonic('a');
         addItem.setEnabled(false);
-        
+
+        removeItem = new JMenuItem("Remove");
+        removeItem.addActionListener(l -> removeCurrentCard());
+        removeItem.setMnemonic('r');
+        removeItem.setEnabled(false);
+
         JMenu editMenu = new JMenu("Edit");
         editMenu.add(addItem);
+        editMenu.add(removeItem);
 
         menuBar.add(fileMenu);
         menuBar.add(editMenu);
@@ -225,6 +250,7 @@ public class MainWindow extends JFrame {
         shuffleButton.setEnabled(value);
 
         addItem.setEnabled(value);
+        removeItem.setEnabled(value);
         saveItem.setEnabled(value);
     }
 
