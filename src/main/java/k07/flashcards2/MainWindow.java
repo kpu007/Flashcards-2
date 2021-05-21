@@ -73,7 +73,7 @@ public class MainWindow extends JFrame {
             FileNameExtensionFilter filter = new FileNameExtensionFilter("CSV Files", "csv");
             chooser.setFileFilter(filter);
 
-            int returnVal = chooser.showOpenDialog(null);
+            int returnVal = chooser.showSaveDialog(null);
             if(returnVal == JFileChooser.APPROVE_OPTION) {
                 File file = chooser.getSelectedFile();
 
